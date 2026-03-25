@@ -13,12 +13,20 @@ const PORT = process.env.PORT || 3003;
 *---------------
 */
 // post 
-app.post('/', (req, res) => {
-    res.send(`<h3>test post</h3>`);
-});
+
 // GET
 app.get('/', (req, res) => {
     res.send(`<h3>Hello, YBoosST TEAM !</h3>`);
+});
+app.post('/api/pokemons', (req, res) => {
+    const id = pokemons.length + 1;
+    
+    const pokemonCreated = { ...req.body, id: id, created: new Date() };
+    
+    pokemons.push(pokemonCreated);
+    
+    const message = `Le Pokémon ${pokemonCreated.name} a bien été ajouté.`;
+    res.json(helper.success(message, pokemonCreated));
 });
 /*
 app.get('/api/pokemons/1', (req, res) => {
