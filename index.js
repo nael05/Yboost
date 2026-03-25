@@ -2,6 +2,7 @@
 const express = require('express');
 let pokemons = require('./db-pokemons');
 let helper = require('./helper');
+const fs = require('fs');
 
 
 // Les variables utilisees dans le programme
@@ -12,21 +13,9 @@ const PORT = process.env.PORT || 3003;
 * R O U T I N G
 *---------------
 */
-// post 
-
 // GET
 app.get('/', (req, res) => {
     res.send(`<h3>Hello, YBoosST TEAM !</h3>`);
-});
-app.post('/api/pokemons', (req, res) => {
-    const id = pokemons.length + 1;
-    
-    const pokemonCreated = { ...req.body, id: id, created: new Date() };
-    
-    pokemons.push(pokemonCreated);
-    
-    const message = `Le Pokémon ${pokemonCreated.name} a bien été ajouté.`;
-    res.json(helper.success(message, pokemonCreated));
 });
 /*
 app.get('/api/pokemons/1', (req, res) => {
@@ -76,3 +65,25 @@ app.listen(PORT, () => {
 console.log(`Server listening on http://localhost:${PORT}`);
 });
 
+
+
+
+
+app.post('/api/pokemons', (req, res) => {
+    const id = pokemons.length + 1;
+    const pokemonCreated = { ...req.body, id: id, created: new Date() };
+    
+    pokemons.push(pokemonCreated);
+    const pokemonsString = JSON.stringify(pokemons, null, 2);
+    
+    const fileContent = `const pokemons = ${pokemonsString};\n\nmodule.exports = pokemons;`;
+    
+    fs.writeFileSync('./db-pokemons.js', fileContent);
+    
+    const message = `Le Pokémon ${pokemonCreated.name} a bien été ajouté et sauvegardé dans le fichier !`;
+    res.json(helper.success(message, pokemonCreated));
+});
+
+app.listen(PORT, () => {
+    console.log(`Le serveur a démarré sur : http://localhost:${PORT}`);
+});
