@@ -12,6 +12,10 @@ const PORT = process.env.PORT || 3003;
 * R O U T I N G
 *---------------
 */
+// post 
+app.post('/', (req, res) => {
+    res.send(`<h3>test post</h3>`);
+});
 // GET
 app.get('/', (req, res) => {
     res.send(`<h3>Hello, YBoosST TEAM !</h3>`);
