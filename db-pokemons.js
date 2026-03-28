@@ -1,5 +1,16 @@
 const pokemons = [
   {
+    "id": 1,
+    "name": "Bulbizarre",
+    "hp": 25,
+    "cp": 20,
+    "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png",
+    "types": [
+      "Normal"
+    ],
+    "created": "2026-03-25T15:24:46.087Z"
+  },
+  {
     "id": 2,
     "name": "Salamèche",
     "hp": 28,
