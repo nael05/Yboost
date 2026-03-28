@@ -1,17 +1,5 @@
 const pokemons = [
   {
-    "id": 1,
-    "name": "Bulbizarre",
-    "hp": 25,
-    "cp": 5,
-    "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png",
-    "types": [
-      "Plante",
-      "Poison"
-    ],
-    "created": "2026-03-25T15:24:46.087Z"
-  },
-  {
     "id": 2,
     "name": "Salamèche",
     "hp": 28,
@@ -137,7 +125,15 @@ const pokemons = [
   },
   {
     "id": 13,
-    "created": "2026-03-25T15:24:58.920Z"
+    "name": "Dracaufeu evolution",
+    "hp": 78,
+    "cp": 84,
+    "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/006.png",
+    "types": [
+      "Feu",
+      "Vol"
+    ],
+    "created": "2026-03-28T10:16:28.452Z"
   }
 ];
 
