@@ -148,3 +148,7 @@ app.delete('/api/pokemons/:id', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Le serveur a démarré sur : http://localhost:${PORT}`);
 });
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});

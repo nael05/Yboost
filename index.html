@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Pokédex</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+        .pokemon-card { border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin: 10px 0; display: flex; align-items: center; gap: 15px; background: #fff; }
+        .pokemon-card img { width: 60px; height: 60px; }
+        button { cursor: pointer; padding: 5px 10px; border: none; border-radius: 4px; color: white; }
+        .btn-edit { background: #ffc107; color: black; }
+        .btn-delete { background: #dc3545; }
+        .btn-submit { background: #28a745; width: 100%; padding: 10px; margin-top: 10px; }
+        form { margin-bottom: 30px; padding: 15px; border: 2px solid #007bff; border-radius: 8px; background: #f8f9fa; display: flex; flex-direction: column; gap: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🌟 Mon Pokédex</h1>
+
+    <form id="pokemonForm">
+        <h3 id="formTitle">Ajouter un nouveau Pokémon</h3>
+        <input type="hidden" id="pokeId">
+        <input type="text" id="pokeName" placeholder="Nom du Pokémon" required>
+        <input type="number" id="pokeHp" placeholder="Points de vie (HP)" required>
+        <input type="number" id="pokeCp" placeholder="Dégâts (CP)" required>
+        <input type="url" id="pokePic" placeholder="URL de l'image (https://...)" required>
+        <button type="submit" class="btn-submit">Sauvegarder le Pokémon</button>
+    </form>
+
+    <h2>Liste des Pokémons</h2>
+    <div id="pokemonList">
+    </div>
+
+    <script>
+        const API_URL = '/api/pokemons';
+
+        async function fetchPokemons() {
+            const response = await fetch(API_URL);
+            const resData = await response.json();
+            const pokemons = resData.data;
+            
+            const list = document.getElementById('pokemonList');
+            list.innerHTML = '';
+            
+            pokemons.forEach(p => {
+                list.innerHTML += `
+                    <div class="pokemon-card">
+                        <img src="${p.picture}" alt="${p.name}">
+                        <div style="flex-grow: 1;">
+                            <strong>${p.name}</strong> (ID: ${p.id})<br>
+                            HP: ${p.hp} | CP: ${p.cp}
+                        </div>
+                        <button class="btn-edit" onclick="prepareEdit(${p.id})">Modifier</button>
+                        <button class="btn-delete" onclick="deletePokemon(${p.id})">Supprimer</button>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('pokemonForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('pokeId').value;
+            const pokemonData = {
+                name: document.getElementById('pokeName').value,
+                hp: parseInt(document.getElementById('pokeHp').value),
+                cp: parseInt(document.getElementById('pokeCp').value),
+                picture: document.getElementById('pokePic').value,
+                types: ["Normal"]
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_URL}/${id}` : API_URL;
+
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pokemonData)
+            });
+
+            document.getElementById('pokemonForm').reset();
+            document.getElementById('pokeId').value = '';
+            document.getElementById('formTitle').innerText = 'Ajouter un nouveau Pokémon';
+            fetchPokemons();
+        });
+
+        async function prepareEdit(id) {
+            const response = await fetch(`${API_URL}/${id}`);
+            const resData = await response.json();
+            const p = resData.data;
+
+            document.getElementById('pokeId').value = p.id;
+            document.getElementById('pokeName').value = p.name;
+            document.getElementById('pokeHp').value = p.hp;
+            document.getElementById('pokeCp').value = p.cp;
+            document.getElementById('pokePic').value = p.picture;
+            document.getElementById('formTitle').innerText = `Modifier le Pokémon n°${p.id}`;
+            window.scrollTo(0, 0);
+        }
+
+        async function deletePokemon(id) {
+            if(confirm('Voulez-vous vraiment supprimer ce Pokémon ?')) {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                fetchPokemons();
+            }
+        }
+
+        fetchPokemons();
+    </script>
+</body>
+</html>
